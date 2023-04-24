@@ -68,12 +68,12 @@ def get_stock_data(stock_codes, file_path):
     for stock_code in stock_codes:
         i += 1
         rs = bs.query_history_k_data_plus(stock_code,
-                                          "date, code, open, high, low, close, preclose, volume, amount, adjustflag, turn, \
-                                            tradestatus, pctChg, isST",
-                                          start_date='2023-04-01',
+                                          "date, code, open, high, low, close, preclose, volume, amount, adjustflag, \
+                                            turn, tradestatus, pctChg, peTTM, pbMRQ, psTTM, pcfNcfTTM, isST",
+                                          start_date='2019-01-01',
                                           end_date='2023-04-24',
                                           frequency="d",
-                                          adjustflag="3"
+                                          adjustflag="2"
                                           )
 
         print('query_history_k_data_plus respond error_code:' + rs.error_code)

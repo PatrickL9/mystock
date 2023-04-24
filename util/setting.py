@@ -1,0 +1,6 @@
+# 测试环境
+MYSQL_HOST = 'localhost'
+MYSQL_DBNAME = 'test'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = '12345678'
+MYSQL_PORT = 3306
