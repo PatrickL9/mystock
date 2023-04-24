@@ -2,7 +2,7 @@ import baostock as bs
 import pandas as pd
 import sys
 import datetime
-
+import os
 pd.set_option('display.width', None)  # 设置字符显示无限制
 pd.set_option('display.max_rows', None)  # 设置行数显示无限制
 
@@ -41,49 +41,67 @@ def get_stock_codes(date=None):
     bs.logout()
 
     # 筛选股票数据，上证和深证股票代码在sh.600000与sz.39900之间
-    stock_df = stock_df[(stock_df['code'] >= 'sh.600000') & (stock_df['code'] < 'sz.399000')]
+    # stock_df = stock_df[(stock_df['code'] >= 'sh.600000') & (stock_df['code'] < 'sz.399000')]
+
+    # 股票代码筛选，剔除中小板，创业板，北交所以及指数代码
+    stock_df = stock_df[((stock_df['code'] < 'sz.300000') & (stock_df['code'] > 'sh.689000')) | (
+            (stock_df['code'] < 'sh.688000') & (stock_df['code'] > 'sh.009999'))]
 
     # 返回股票列表
     return stock_df['code'].tolist()
 
 
-def get_stock_data(stock_codes):
+def get_stock_data(stock_codes, file_path):
     # 登陆系统 ####
     lg = bs.login()
     # 显示登陆返回信息
-    print('login respond error_code:'+lg.error_code)
-    print('login respond  error_msg:'+lg.error_msg)
+    print('login respond error_code:' + lg.error_code)
+    print('login respond error_msg:' + lg.error_msg)
+
+    # print(type(lg.error_code))
 
     # 获取沪深A股历史K线数据 ####
     # 详细指标参数，参见“历史行情指标参数”章节；“分钟线”参数与“日线”参数不同。“分钟线”不包含指数。
     # 分钟线指标：date,time,code,open,high,low,close,volume,amount,adjustflag
     # 周月线指标：date,code,open,high,low,close,volume,amount,adjustflag,turn,pctChg
+    i = 0
     for stock_code in stock_codes:
+        i += 1
         rs = bs.query_history_k_data_plus(stock_code,
                                           "date, code, open, high, low, close, preclose, volume, amount, adjustflag, turn, \
                                             tradestatus, pctChg, isST",
-                                          start_date='2023-01-01',
+                                          start_date='2023-04-01',
                                           end_date='2023-04-24',
                                           frequency="d",
                                           adjustflag="3"
                                           )
+
         print('query_history_k_data_plus respond error_code:' + rs.error_code)
-        print('query_history_k_data_plus respond  error_msg:' + rs.error_msg)
+        print('query_history_k_data_plus respond error_msg:' + rs.error_msg)
 
         # 打印结果集 ####
         data_list = []
         while (rs.error_code == '0') & rs.next():
             # 获取一条记录，将记录合并在一起
             data_list.append(rs.get_row_data())
-        result = pd.DataFrame(data_list, columns=rs.fields)
+        df_result = pd.DataFrame(data_list, columns=rs.fields)
 
         # 结果集输出到csv文件 ####
         # result.to_csv("D:\\history_A_stock_k_data.csv", index=False)
-        print(result)
+        if i == 1:
+            # 第一个结果选择全部保存
+            df_result.to_csv(file_path, index=False, sep=',', encoding='utf-8-sig')
+        else:
+            # 从第二个结果开始，忽略表头保存
+            df_result.to_csv(file_path, mode='a', index=False, sep=',', encoding='utf-8-sig', header=False)
+        print(df_result)
 
     # 登出系统 ####
     bs.logout()
 
 
 if __name__ == '__main__':
-    get_stock_data(get_stock_codes())
+    file_name = '股票数据源_20230424.csv'
+    save_path = os.path.join(os.getcwd(), file_name)
+    get_stock_data(get_stock_codes(), save_path)
+
