@@ -75,7 +75,7 @@ def get_stock_codes(date=None):
     return stock_df['code'].tolist()
 
 
-def get_stock_data(stock_codes, file_path=None):
+def get_stock_data(stock_codes, start_d, end_d, file_path=None):
     # 登陆系统 ####
     lg = bs.login()
     # 显示登陆返回信息
@@ -96,8 +96,8 @@ def get_stock_data(stock_codes, file_path=None):
         rs = bs.query_history_k_data_plus(stock_code,
                                           "date, code, open, high, low, close, preclose, volume, amount, adjustflag, \
                                             turn, tradestatus, pctChg, peTTM, pbMRQ, psTTM, pcfNcfTTM, isST",
-                                          start_date='2013-01-01',
-                                          end_date='2023-05-04',
+                                          start_date=start_d,
+                                          end_date=end_d,
                                           frequency="d",
                                           adjustflag="2"
                                           )
@@ -145,5 +145,7 @@ def get_stock_data(stock_codes, file_path=None):
 if __name__ == '__main__':
     # file_name = '股票数据源_20230424.csv'
     # save_path = os.path.join(os.getcwd(), file_name)
-    get_stock_data(get_stock_codes())
+    start_date_str = '2013-01-01'
+    end_date_str = datetime.date.today() - datetime.timedelta(days=1)
+    get_stock_data(get_stock_codes(), start_date_str, end_date_str)
 
