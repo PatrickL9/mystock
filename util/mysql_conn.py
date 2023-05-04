@@ -2,12 +2,12 @@
 
 """
 mysql类，连接mysql并进行数据库操作
-@Author ：linbaixiang
-@Date ：2023-04-25
+@Author : linbaixiang
+@Date : 2023-04-25
 """
 
 import pymysql
-from setting import MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWORD, MYSQL_PORT
+from util.setting import MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWORD, MYSQL_PORT
 
 
 class DoMysql:
