@@ -82,6 +82,8 @@ def get_stock_data(stock_codes, start_d, end_d, file_path=None):
     print('login respond error_code:' + lg.error_code)
     print('login respond error_msg:' + lg.error_msg)
 
+    print('数据开始日期：{}'.format(start_d))
+    print('数据结束日期：{}'.format(end_d))
     # 连接数据库
 
 
@@ -147,5 +149,5 @@ if __name__ == '__main__':
     # save_path = os.path.join(os.getcwd(), file_name)
     start_date_str = '2013-01-01'
     end_date_str = datetime.date.today() - datetime.timedelta(days=1)
-    get_stock_data(get_stock_codes(), start_date_str, end_date_str)
+    get_stock_data(get_stock_codes(), start_date_str, str(end_date_str))
 
