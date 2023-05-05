@@ -15,6 +15,7 @@ import os
 import time
 from sqlalchemy import create_engine
 from util.setting import MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWORD, MYSQL_PORT
+from util.logging_conf import logging
 pd.set_option('display.width', None)  # 设置字符显示无限制
 pd.set_option('display.max_rows', None)  # 设置行数显示无限制
 
@@ -52,7 +53,7 @@ def get_stock_codes(date=None):
 
         # 如果设置了参数date，则打印信息提示date为非交易日
         if date is not None:
-            print('当前选择日期为非交易日或尚无交易数据，请设置date为历史某交易日日期')
+            logging.warn('当前选择日期为非交易日或尚无交易数据，请设置date为历史某交易日日期')
             sys.exit(0)
 
         # 未设置参数date，则向历史查找最近的交易日，当获取股票数据长度非0时，即找到最近交易日
@@ -79,11 +80,11 @@ def get_stock_data(stock_codes, start_d, end_d, file_path=None):
     # 登陆系统 ####
     lg = bs.login()
     # 显示登陆返回信息
-    print('login respond error_code:' + lg.error_code)
-    print('login respond error_msg:' + lg.error_msg)
+    logging.info('login respond error_code:' + lg.error_code)
+    logging.info('login respond error_msg:' + lg.error_msg)
 
-    print('数据开始日期：{}'.format(start_d))
-    print('数据结束日期：{}'.format(end_d))
+    logging.info('数据开始日期：{}'.format(start_d))
+    logging.info('数据结束日期：{}'.format(end_d))
     # 连接数据库
 
 
@@ -94,7 +95,7 @@ def get_stock_data(stock_codes, start_d, end_d, file_path=None):
     i = 0
     for stock_code in stock_codes:
         i += 1
-        print('获取股票 {} 的数据，还有{}个股票需要获取'.format(stock_code, str(len(stock_codes)-i)))
+        logging.info('获取股票 {} 的数据，还有{}个股票需要获取'.format(stock_code, str(len(stock_codes)-i)))
         rs = bs.query_history_k_data_plus(stock_code,
                                           "date, code, open, high, low, close, preclose, volume, amount, adjustflag, \
                                             turn, tradestatus, pctChg, peTTM, pbMRQ, psTTM, pcfNcfTTM, isST",
@@ -104,8 +105,8 @@ def get_stock_data(stock_codes, start_d, end_d, file_path=None):
                                           adjustflag="2"
                                           )
 
-        print('query_history_k_data_plus respond error_code:' + rs.error_code)
-        print('query_history_k_data_plus respond error_msg:' + rs.error_msg)
+        logging.info('query_history_k_data_plus respond error_code:' + rs.error_code)
+        logging.info('query_history_k_data_plus respond error_msg:' + rs.error_msg)
 
         # 打印结果集 ####
         data_list = []
@@ -147,7 +148,8 @@ def get_stock_data(stock_codes, start_d, end_d, file_path=None):
 if __name__ == '__main__':
     # file_name = '股票数据源_20230424.csv'
     # save_path = os.path.join(os.getcwd(), file_name)
-    start_date_str = '2013-01-01'
+    # start_date_str = '2013-01-01'
+    start_date_str = datetime.date.today() - datetime.timedelta(days=1)
     end_date_str = datetime.date.today() - datetime.timedelta(days=1)
-    get_stock_data(get_stock_codes(), start_date_str, str(end_date_str))
+    get_stock_data(get_stock_codes(), str(start_date_str), str(end_date_str))
 
