@@ -15,11 +15,11 @@ from util import logging_util
 LOGGING_LEVEL = 'INFO'
 
 # 日志文件保存路径
-logging_dir = os.getcwd() + r'\log'
+logging_dir = os.getcwd() + r'/log'
 if not os.path.isdir(logging_dir):
     os.makedirs(logging_dir)
 # 日志文件前缀处理
 to_day = datetime.datetime.now()
-LOGGING_PATH = logging_dir + r'\stock_craw_{}{:02}{:02}.log'.format(to_day.year, to_day.month, to_day.day)
+LOGGING_PATH = logging_dir + r'/stock_craw_{}{:02}{:02}.log'.format(to_day.year, to_day.month, to_day.day)
 # 设置日志级别
 logging = logging_util.LoggingUtil(LOGGING_LEVEL, LOGGING_PATH).get_logging()
