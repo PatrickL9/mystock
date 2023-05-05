@@ -1,5 +1,6 @@
 --K线图原始数据
 create table stock_k_data_daily (
+id bigint not null auto_increment primary key comment '自增id';
 dt  varchar(20) comment '交易所行情日期',
 code  varchar(20) comment '证券代码',
 open_price  decimal(30,20) default null comment '开盘价',
