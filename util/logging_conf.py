@@ -1,5 +1,5 @@
-# -*- coding: UTF-8 -*-
 #!/usr/bin/python3
+# -*- coding: UTF-8 -*-
 
 """
 设置日志级别和log保存路径

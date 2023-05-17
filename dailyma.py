@@ -1,5 +1,5 @@
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
-# !/usr/bin/python3
 
 """
 通过baostock，获取国内股票数据，并写入mysql
